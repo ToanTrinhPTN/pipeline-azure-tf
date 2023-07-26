@@ -21,6 +21,7 @@ jobs:
     defaults:
       run:
         shell: bash
+        working-directory: ./terraform
     steps:
     
     # Checkout the repository to the GitHub Actions runner
@@ -29,31 +30,31 @@ jobs:
 # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
-      with:
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      # with:
+      #   cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     # - name: Change working directory
     #   run: |
     #     ls
     #     cd terraform
+    - name: Terraform fmt
+      id: fmt
+      run: terraform fmt -check
+      continue-on-error: true
     - name: Terraform Init
       run: terraform init
-      working-directory: ./terraform
-      env:
-        ARM_CLIENT_ID: ${{ env.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ env.ARM_CLIENT_SECRET }}
-        ARM_TENANT_ID: ${{ env.ARM_TENANT_ID }}
-        ARM_SUBSCRIPTION_ID: ${{ env.ARM_SUBSCRIPTION_ID }}
+
 # Generates an execution plan for Terraform
     - name: Terraform Plan
-      run: terraform plan -input=false
-      working-directory: ./terraform
       env:
         ARM_CLIENT_ID: ${{ env.ARM_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ env.ARM_TENANT_ID }}
+        ARM_CLIENT_SECRET: ${{ env.ARM_CLIENT_SECRET  }}
         ARM_TENANT_ID: ${{ env.ARM_TENANT_ID }}
         ARM_SUBSCRIPTION_ID: ${{ env.ARM_SUBSCRIPTION_ID }}
+      run: terraform plan -input=false
+  
+      
 # Apply Terraform changes
     # - name: Terraform Apply
     #   run: terraform apply -auto-approve -input=false
-    # working-directory: ./terraform
+    
