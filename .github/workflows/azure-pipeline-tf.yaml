@@ -34,7 +34,7 @@ jobs:
     - name: Change working directory
       run: |
         ls
-        cd ./terraform
+        cd terraform
     - name: Terraform Init
       run: terraform init
 # Generates an execution plan for Terraform
