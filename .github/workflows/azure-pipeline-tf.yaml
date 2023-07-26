@@ -23,12 +23,10 @@ jobs:
         shell: bash
         working-directory: ./terraform
     steps:
-    - name: Az CLI login
+    - name: Login into Azure
       uses: azure/login@v1
       with:
-        client-id: ${{ env.AZURE_CLIENT_ID }}
-        tenant-id: ${{ env.AZURE_TENANT_ID }}
-        subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}   
+        creds: ${{ secrets.AZURE_CREDENTIALS }}  
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
@@ -36,7 +34,8 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
-        cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        # cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+        cli_config_credentials_token: ${{ secrets.AZURE_CREDENTIALS }}
 # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     # - name: Change working directory
     #   run: |
