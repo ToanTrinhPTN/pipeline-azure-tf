@@ -11,6 +11,7 @@ jobs:
   terraform:
     name: 'Terraform'
     env:
+      working-directory: ./terraform
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
       ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
@@ -36,9 +37,7 @@ jobs:
     #     ls
     #     cd terraform
     - name: Terraform Init
-      run: |
-        cd terraform
-        terraform init
+      run: terraform init
 # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
