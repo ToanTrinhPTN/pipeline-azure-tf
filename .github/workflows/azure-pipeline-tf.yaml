@@ -1,11 +1,9 @@
 name: 'Terraform'
 on:
-  push:
-    # branches:
-    # - master
   pull_request:
     branches:
-      - master
+      - master 
+
   workflow_dispatch:
     inputs:
       name:
@@ -13,6 +11,7 @@ on:
         description: Who to greet
         options:
           - run
+          - destroy
 permissions:
   contents: read
 jobs:
@@ -61,10 +60,19 @@ jobs:
   
       
 # Apply Terraform changes
+    # - name: Terraform Apply
+    #   run: terraform validate
+    #   run: terraform apply -auto-approve -input=false
     - name: Terraform Apply
-      run: terraform validate
-      # run: terraform apply -auto-approve -input=false
+      if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+      run: terraform apply -auto-approve -input=false
 
+      
+
+    # - name: Terraform Destroy
+    #   run: terraform destroy -auto-approve -input=false
     - name: Terraform Destroy
-      run: terraform destroy -auto-approve -input=false
+      if: github.event.inputs.name == 'destroy' 
+      run: terraform destroy -auto-approve 
+      # -input=false
     
