@@ -25,45 +25,50 @@ jobs:
         shell: bash
         working-directory: ./terraform
 
-    steps:
-       
-    # Checkout the repository to the GitHub Actions runner
-    - name: Checkout
-      uses: actions/checkout@v3
+    steps:       
+      # Checkout the repository to the GitHub Actions runner
+      - name: Checkout
+        uses: actions/checkout@v3
 
-    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        cli_config_credentials_token: ${{ secrets.AZURE_CREDENTIALS }}
-    
-    # Initilize a module for terraform 
-    - name: Terraform Init
-      run: terraform init
-    
-    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
-    - name: Terraform fmt
-      id: fmt
-      run: terraform fmt
-      continue-on-error: true 
-
-    # Login to Azure CLI to perform terraform's action 
-    - name: Login into Azure
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }} 
+      # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+        # with:
+        #   cli_config_credentials_token: ${{ secrets.AZURE_CREDENTIALS }}
       
-    # Generates an execution plan for Terraform
-    - name: Terraform Plan
-      run: terraform plan -input=false
-              
-    # Apply Terraform changes
-    - name: Terraform Apply
-      if: github.event.inputs.name == 'run' ||  github.event.inputs.name == 'test'
-      run: terraform apply -auto-approve -input=false
-    
-    # Destroy Terraform after testing
-    - name: Terraform Destroy
-      if: github.event.inputs.name == 'test' 
-      run: terraform destroy -auto-approve -input=false
+      # Initilize a module for terraform 
+      - name: Terraform Init
+        run: terraform init
+      
+      # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+      - name: Terraform fmt
+        id: fmt
+        run: terraform fmt -check
+        continue-on-error: true 
+
+      # Validate configuration file
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+        continue-on-error: false
+
+      # Login to Azure CLI to perform terraform's action 
+      - name: Login into Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+        
+      # Generates an execution plan for Terraform
+      - name: Terraform Plan
+        run: terraform plan -input=false
+                
+      # Apply Terraform changes
+      - name: Terraform Apply
+        if: github.event.inputs.name == 'run' ||  github.event.inputs.name == 'test'
+        run: terraform apply -auto-approve -input=false
+      
+      # Destroy Terraform after testing
+      - name: Terraform Destroy
+        if: github.event.inputs.name == 'test' 
+        run: terraform destroy -auto-approve -input=false
     
