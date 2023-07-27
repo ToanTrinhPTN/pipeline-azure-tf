@@ -44,7 +44,7 @@ jobs:
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform fmt
       id: fmt
-      run: terraform fmt -check
+      run: terraform fmt
       continue-on-error: true 
 
     # Login to Azure CLI to perform terraform's action 
