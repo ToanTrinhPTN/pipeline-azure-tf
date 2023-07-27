@@ -1,4 +1,4 @@
-name: 'Terraform'
+name: 'Terraform Deployment'
 on:
   pull_request:
     branches:
@@ -11,22 +11,21 @@ on:
         description: Who to greet
         default: run
         options:
-          - run
           - test
-          
-
+          - run
+ 
 jobs:
   terraform:
     name: 'Terraform'
     runs-on: ubuntu-latest
 
-# Use the Bash shell regardless of whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
+    # Use the Bash shell regardless of whether the GitHub Actions runner is ubuntu-latest, macos-latest, or windows-latest
     defaults:
       run:
         shell: bash
         working-directory: ./terraform
-    steps:
 
+    steps:
     - name: Login into Azure
       uses: azure/login@v1
       with:
@@ -35,13 +34,14 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v3
-# Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
+
+    # Install the latest version of Terraform CLI and configure the Terraform CLI configuration file with a Terraform Cloud user API token
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
       with:
         cli_config_credentials_token: ${{ secrets.AZURE_CREDENTIALS }}
-# Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
 
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform fmt
       id: fmt
       run: terraform fmt -check
@@ -50,31 +50,17 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-# Generates an execution plan for Terraform
+    # Generates an execution plan for Terraform
     - name: Terraform Plan
-      env:      
-        ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-        ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-        ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-        ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      run: terraform plan 
-      # -input=false
-  
-      
-# Apply Terraform changes
-    # - name: Terraform Apply
-    #   run: terraform validate
-    #   run: terraform apply -auto-approve -input=false
+      run: terraform plan -input=false
+              
+    # Apply Terraform changes
     - name: Terraform Apply
       if: github.event.inputs.name == 'run' ||  github.event.inputs.name == 'test'
       run: terraform apply -auto-approve -input=false
-
-      
-
-    # - name: Terraform Destroy
-    #   run: terraform destroy -auto-approve -input=false
+    
+    # Destroy Terraform after testing
     - name: Terraform Destroy
       if: github.event.inputs.name == 'test' 
-      run: terraform destroy -auto-approve 
-      # -input=false
+      run: terraform destroy -auto-approve -input=false
     
