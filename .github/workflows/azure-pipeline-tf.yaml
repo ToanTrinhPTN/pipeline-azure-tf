@@ -10,8 +10,9 @@ on:
         type: choice
         description: Who to greet
         options:
+          - test
           - run
-          - destroy
+
 permissions:
   contents: read
 jobs:
@@ -64,7 +65,7 @@ jobs:
     #   run: terraform validate
     #   run: terraform apply -auto-approve -input=false
     - name: Terraform Apply
-      if: github.event_name == 'workflow_dispatch' || github.event_name == 'pull_request'
+      if: github.event.inputs.name == 'run' 
       run: terraform apply -auto-approve -input=false
 
       
@@ -72,7 +73,7 @@ jobs:
     # - name: Terraform Destroy
     #   run: terraform destroy -auto-approve -input=false
     - name: Terraform Destroy
-      if: github.event.inputs.name == 'destroy' 
+      if: github.event.inputs.name == 'test' 
       run: terraform destroy -auto-approve 
       # -input=false
     
