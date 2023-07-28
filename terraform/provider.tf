@@ -22,21 +22,3 @@ provider "azurerm" {
   tenant_id       = "8b8f627d-40d6-4e75-9dcc-2650bf42d0ce"
 }
 
-<<<<<<< HEAD
-# az ad sp create-for-rbac --name "myApp" --role contributor --scopes /subscriptions/90802f8d-10f6-49cb-880c-ac7ef25a9a63/resourceGroups/cloud-shell-storage-southeastasia --sdk-auth
-# az ad sp create-for-rbac --sdk-auth
-# {
-#   "clientId": "11b68d5d-a9d8-4c67-b095-aee589641d23",
-#   "clientSecret": "O.i8Q~V1vYebDxQQdW2U4eGmGAzHI1T1eSu_ccwU",
-#   "subscriptionId": "90802f8d-10f6-49cb-880c-ac7ef25a9a63",
-#   "tenantId": "8b8f627d-40d6-4e75-9dcc-2650bf42d0ce",
-#   "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
-#   "resourceManagerEndpointUrl": "https://management.azure.com/",
-#   "activeDirectoryGraphResourceId": "https://graph.windows.net/",
-#   "sqlManagementEndpointUrl": "https://management.core.windows.net:8443/",
-#   "galleryEndpointUrl": "https://gallery.azure.com/",
-#   "managementEndpointUrl": "https://management.core.windows.net/"
-# }
-
-=======
->>>>>>> 7a40bffd3254b8f12d7f8a4a54a264b49b760808
