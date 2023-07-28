@@ -6,6 +6,13 @@ on:
 
   workflow_dispatch:
     inputs:
+      working_directory:
+        type: choice
+        description: Who to greet
+        required: true
+        options:
+          - terraform
+        
       name:
         type: choice
         description: Who to greet
@@ -24,7 +31,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./terraform
+        working-directory: './${{github.event.inputs.working_directory}}'
 
     steps:       
       # Checkout the repository to the GitHub Actions runner
